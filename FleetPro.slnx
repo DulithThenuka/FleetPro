@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="FleetPro.Application/FleetPro.Application.csproj" />
+  <Project Path="FleetPro.Domain/FleetPro.Domain.csproj" />
+  <Project Path="FleetPro.Infrastructure/FleetPro.Infrastructure.csproj" />
+  <Project Path="FleetPro.WPF/FleetPro.WPF.csproj" />
+</Solution>

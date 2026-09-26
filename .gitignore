@@ -1,0 +1,27 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio
+.vs/
+
+# User files
+*.user
+*.suo
+
+# Rider
+.idea/
+
+# Logs
+*.log
+
+# Database local files
+*.mdf
+*.ldf
+
+# Environment files
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
