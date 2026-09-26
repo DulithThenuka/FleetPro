@@ -1,10 +1,12 @@
+using FleetPro.Application.DTOs;
 using FleetPro.Application.Interfaces;
 
 namespace FleetPro.Application.Services;
 
-public class AuthenticationService
+public class AuthenticationService : IAuthenticationService
 {
     private readonly IUserRepository _userRepository;
+
 
     public AuthenticationService(
         IUserRepository userRepository)
@@ -13,21 +15,63 @@ public class AuthenticationService
     }
 
 
-    public async Task<bool> LoginAsync(
-        string username,
-        string password)
+    public async Task<LoginResponse> LoginAsync(
+        LoginRequest request)
     {
         var user =
             await _userRepository
-            .GetByUsernameAsync(username);
+            .GetByUsernameAsync(request.Username);
 
 
-        if(user == null)
-            return false;
+        if (user == null)
+        {
+            return new LoginResponse
+            {
+                Success = false,
+                Message = "User not found."
+            };
+        }
 
 
-        return BCrypt.Net.BCrypt.Verify(
-            password,
-            user.PasswordHash);
+        if (!user.IsActive)
+        {
+            return new LoginResponse
+            {
+                Success = false,
+                Message = "User account is inactive."
+            };
+        }
+
+
+        var passwordValid =
+            BCrypt.Net.BCrypt.Verify(
+                request.Password,
+                user.PasswordHash);
+
+
+        if (!passwordValid)
+        {
+            return new LoginResponse
+            {
+                Success = false,
+                Message = "Invalid password."
+            };
+        }
+
+
+        var role =
+            user.UserRoles
+            .FirstOrDefault()
+            ?.Role
+            ?.RoleName;
+
+
+        return new LoginResponse
+        {
+            Success = true,
+            Message = "Login successful.",
+            Username = user.Username,
+            Role = role
+        };
     }
 }

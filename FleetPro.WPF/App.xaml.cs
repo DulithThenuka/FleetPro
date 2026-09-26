@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using FleetPro.Infrastructure.Data.Seed;
 using FleetPro.Application.Services;
+using FleetPro.Application.Interfaces;
 
 namespace FleetPro.WPF;
 
@@ -39,6 +40,7 @@ public partial class App : System.Windows.Application
         services.AddSingleton<MainWindow>();
 
         services.AddScoped<AuthenticationService>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
         
     }
 
