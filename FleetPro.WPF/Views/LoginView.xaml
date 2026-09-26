@@ -39,7 +39,8 @@
                            FontWeight="SemiBold"
                            Margin="0,0,0,6"/>
 
-                <PasswordBox Height="42"
+                <TextBox     Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
+                             Height="42"
                              Padding="10"
                              Margin="0,0,0,25"/>
 
