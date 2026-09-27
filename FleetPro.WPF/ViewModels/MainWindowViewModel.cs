@@ -5,12 +5,20 @@ namespace FleetPro.WPF.ViewModels;
 public partial class MainWindowViewModel : ObservableObject
 {
     [ObservableProperty]
-    private string appTitle = "FleetPro";
+    private ObservableObject? currentViewModel;
 
-    [ObservableProperty]
-    private string welcomeMessage =
-        "Smart Fleet & Vehicle Service Management System";
+    public void ShowLogin(LoginViewModel loginViewModel)
+    {
+        CurrentViewModel = loginViewModel;
+    }
 
-    [ObservableProperty]
-    private string systemStatus = "System is running";
+    public void ShowDashboard(
+        string username,
+        string role)
+    {
+        CurrentViewModel =
+            new DashboardViewModel(
+                username,
+                role);
+    }
 }

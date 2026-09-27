@@ -7,13 +7,22 @@ namespace FleetPro.WPF.ViewModels;
 
 public partial class LoginViewModel : ObservableObject
 {
-    private readonly IAuthenticationService _authenticationService;
+    private readonly IAuthenticationService
+        _authenticationService;
+
+    private readonly MainWindowViewModel
+        _mainWindowViewModel;
 
 
     public LoginViewModel(
-        IAuthenticationService authenticationService)
+        IAuthenticationService authenticationService,
+        MainWindowViewModel mainWindowViewModel)
     {
-        _authenticationService = authenticationService;
+        _authenticationService =
+            authenticationService;
+
+        _mainWindowViewModel =
+            mainWindowViewModel;
     }
 
 
@@ -36,11 +45,30 @@ public partial class LoginViewModel : ObservableObject
     [RelayCommand]
     private async Task Login()
     {
+        if (string.IsNullOrWhiteSpace(Username))
+        {
+            LoginMessage =
+                "Please enter your username.";
+
+            return;
+        }
+
+
+        if (string.IsNullOrWhiteSpace(Password))
+        {
+            LoginMessage =
+                "Please enter your password.";
+
+            return;
+        }
+
+
         try
         {
             IsLoading = true;
 
-            LoginMessage = "Checking credentials...";
+            LoginMessage =
+                "Checking credentials...";
 
 
             var request = new LoginRequest
@@ -55,15 +83,23 @@ public partial class LoginViewModel : ObservableObject
                 .LoginAsync(request);
 
 
-            if (result.Success)
+            if (!result.Success)
             {
                 LoginMessage =
-                    $"Welcome {result.Username}\nRole: {result.Role}";
+                    result.Message;
+
+                return;
             }
-            else
-            {
-                LoginMessage = result.Message;
-            }
+
+
+            _mainWindowViewModel.ShowDashboard(
+                result.Username!,
+                result.Role ?? "Unknown");
+        }
+        catch
+        {
+            LoginMessage =
+                "An unexpected error occurred. Please try again.";
         }
         finally
         {

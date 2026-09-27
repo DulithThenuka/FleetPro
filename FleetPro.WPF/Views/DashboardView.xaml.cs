@@ -2,9 +2,9 @@ using System.Windows.Controls;
 
 namespace FleetPro.WPF.Views;
 
-public partial class LoginView : UserControl
+public partial class DashboardView : UserControl
 {
-    public LoginView()
+    public DashboardView()
     {
         InitializeComponent();
     }

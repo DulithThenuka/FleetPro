@@ -1,12 +1,11 @@
 ﻿using System.Windows;
+using FleetPro.Application.Interfaces;
+using FleetPro.Application.Services;
 using FleetPro.Infrastructure;
+using FleetPro.Infrastructure.Data.Seed;
 using FleetPro.WPF.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using FleetPro.Infrastructure.Data.Seed;
-using FleetPro.Application.Services;
-using FleetPro.Application.Interfaces;
-using FleetPro.WPF.Views;
 
 namespace FleetPro.WPF;
 
@@ -26,9 +25,12 @@ public partial class App : System.Windows.Application
 
         var services = new ServiceCollection();
 
-        ConfigureServices(services, configuration);
+        ConfigureServices(
+            services,
+            configuration);
 
-        _serviceProvider = services.BuildServiceProvider();
+        _serviceProvider =
+            services.BuildServiceProvider();
     }
 
     private static void ConfigureServices(
@@ -37,28 +39,40 @@ public partial class App : System.Windows.Application
     {
         services.AddInfrastructure(configuration);
 
-        services.AddSingleton<MainWindowViewModel>();
-        services.AddSingleton<MainWindow>();
-        services.AddTransient<LoginViewModel>();
-        services.AddTransient<LoginView>();
+        services.AddScoped<
+            IAuthenticationService,
+            AuthenticationService>();
 
-        services.AddScoped<AuthenticationService>();
-        services.AddScoped<IAuthenticationService, AuthenticationService>();
-        
+        services.AddTransient<LoginViewModel>();
+
+        services.AddSingleton<MainWindowViewModel>();
+
+        services.AddSingleton<MainWindow>();
     }
 
     protected override async void OnStartup(
-    StartupEventArgs e)
-{
-    base.OnStartup(e);
+        StartupEventArgs e)
+    {
+        base.OnStartup(e);
 
-    await DatabaseSeeder.SeedAsync(
-        _serviceProvider);
+        await DatabaseSeeder.SeedAsync(
+            _serviceProvider);
 
-    var mainWindow =
-        _serviceProvider
-        .GetRequiredService<MainWindow>();
+        var mainWindow =
+            _serviceProvider
+            .GetRequiredService<MainWindow>();
 
-    mainWindow.Show();
-}
+        var mainWindowViewModel =
+            _serviceProvider
+            .GetRequiredService<MainWindowViewModel>();
+
+        var loginViewModel =
+            _serviceProvider
+            .GetRequiredService<LoginViewModel>();
+
+        mainWindowViewModel
+            .ShowLogin(loginViewModel);
+
+        mainWindow.Show();
+    }
 }
