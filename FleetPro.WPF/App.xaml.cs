@@ -48,6 +48,10 @@ public partial class App : System.Windows.Application
         services.AddSingleton<MainWindowViewModel>();
 
         services.AddSingleton<MainWindow>();
+
+        services.AddScoped<
+    IVehicleService,
+    VehicleService>();
     }
 
     protected override async void OnStartup(

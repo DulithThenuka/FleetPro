@@ -54,6 +54,57 @@ public static class DatabaseSeeder
             await context.SaveChangesAsync();
         }
 
+        if (!await context.Branches.AnyAsync())
+{
+    var branch = new Branch
+    {
+        BranchCode = "HQ",
+        BranchName = "Head Office",
+        Address = "Main Office",
+        IsActive = true
+    };
+
+    await context.Branches.AddAsync(branch);
+
+    await context.SaveChangesAsync();
+}
+
+if (!await context.VehicleTypes.AnyAsync())
+{
+    var vehicleTypes = new List<VehicleType>
+    {
+        new()
+        {
+            Name = "Car",
+            Description = "Passenger car"
+        },
+        new()
+        {
+            Name = "Van",
+            Description = "Passenger or cargo van"
+        },
+        new()
+        {
+            Name = "Truck",
+            Description = "Commercial truck"
+        },
+        new()
+        {
+            Name = "Bus",
+            Description = "Passenger bus"
+        },
+        new()
+        {
+            Name = "Motorcycle",
+            Description = "Motorcycle"
+        }
+    };
+
+    await context.VehicleTypes.AddRangeAsync(vehicleTypes);
+
+    await context.SaveChangesAsync();
+}
+
 
 
         // Seed Admin User

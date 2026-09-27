@@ -20,6 +20,12 @@ public class FleetProDbContext : DbContext
 
     public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
 
+    public DbSet<Branch> Branches => Set<Branch>();
+
+    public DbSet<VehicleType> VehicleTypes => Set<VehicleType>();
+
+    public DbSet<Vehicle> Vehicles => Set<Vehicle>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -41,5 +47,8 @@ public class FleetProDbContext : DbContext
         modelBuilder.Entity<Permission>()
             .HasIndex(x => x.PermissionName)
             .IsUnique();
+
+        modelBuilder.ApplyConfigurationsFromAssembly(
+            typeof(FleetProDbContext).Assembly);
     }
 }
