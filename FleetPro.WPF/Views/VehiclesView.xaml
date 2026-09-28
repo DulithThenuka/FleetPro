@@ -1,0 +1,130 @@
+<UserControl x:Class="FleetPro.WPF.Views.VehiclesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Background="#F5F7FA"
+          Margin="25">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <DockPanel Grid.Row="0"
+                   Margin="0,0,0,20">
+
+            <StackPanel DockPanel.Dock="Left">
+
+                <TextBlock Text="Vehicles"
+                           FontSize="30"
+                           FontWeight="Bold"/>
+
+                <TextBlock Text="Manage and monitor fleet vehicles"
+                           Foreground="Gray"
+                           FontSize="15"
+                           Margin="0,5,0,0"/>
+
+            </StackPanel>
+
+            <Button Content="+ Add Vehicle"
+                    DockPanel.Dock="Right"
+                    Width="130"
+                    Height="40"/>
+
+        </DockPanel>
+
+
+        <!-- Search -->
+        <Border Grid.Row="1"
+                Background="White"
+                Padding="15"
+                Margin="0,0,0,15">
+
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0"
+                         Height="38"
+                         Text="{Binding SearchText,
+                                        UpdateSourceTrigger=PropertyChanged}"
+                         VerticalContentAlignment="Center"
+                         Padding="10"/>
+
+                <TextBlock Grid.Column="0"
+                           Text="Search registration, brand or model..."
+                           Foreground="Gray"
+                           VerticalAlignment="Center"
+                           Margin="12,0,0,0"
+                           IsHitTestVisible="False"/>
+
+                <TextBlock Grid.Column="1"
+                           Text="{Binding StatusMessage}"
+                           Foreground="Gray"
+                           VerticalAlignment="Center"
+                           Margin="20,0,0,0"/>
+
+            </Grid>
+
+        </Border>
+
+
+        <!-- Vehicle table -->
+        <Border Grid.Row="2"
+                Background="White"
+                Padding="15">
+
+            <DataGrid ItemsSource="{Binding Vehicles}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      HeadersVisibility="Column">
+
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn Header="Registration"
+                                        Binding="{Binding RegistrationNumber}"
+                                        Width="150"/>
+
+                    <DataGridTextColumn Header="Brand"
+                                        Binding="{Binding Brand}"
+                                        Width="120"/>
+
+                    <DataGridTextColumn Header="Model"
+                                        Binding="{Binding Model}"
+                                        Width="120"/>
+
+                    <DataGridTextColumn Header="Type"
+                                        Binding="{Binding VehicleType}"
+                                        Width="120"/>
+
+                    <DataGridTextColumn Header="Branch"
+                                        Binding="{Binding Branch}"
+                                        Width="120"/>
+
+                    <DataGridTextColumn Header="Fuel"
+                                        Binding="{Binding FuelType}"
+                                        Width="100"/>
+
+                    <DataGridTextColumn Header="Mileage"
+                                        Binding="{Binding CurrentMileage}"
+                                        Width="110"/>
+
+                    <DataGridTextColumn Header="Status"
+                                        Binding="{Binding Status}"
+                                        Width="150"/>
+
+                </DataGrid.Columns>
+
+            </DataGrid>
+
+        </Border>
+
+    </Grid>
+
+</UserControl>

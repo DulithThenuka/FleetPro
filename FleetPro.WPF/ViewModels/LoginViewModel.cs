@@ -13,16 +13,23 @@ public partial class LoginViewModel : ObservableObject
     private readonly MainWindowViewModel
         _mainWindowViewModel;
 
+    private readonly MainShellViewModel
+        _mainShellViewModel;
+
 
     public LoginViewModel(
         IAuthenticationService authenticationService,
-        MainWindowViewModel mainWindowViewModel)
+        MainWindowViewModel mainWindowViewModel,
+        MainShellViewModel mainShellViewModel)
     {
         _authenticationService =
             authenticationService;
 
         _mainWindowViewModel =
             mainWindowViewModel;
+
+        _mainShellViewModel =
+            mainShellViewModel;
     }
 
 
@@ -92,9 +99,13 @@ public partial class LoginViewModel : ObservableObject
             }
 
 
-            _mainWindowViewModel.ShowDashboard(
+            _mainShellViewModel.SetUser(
                 result.Username!,
                 result.Role ?? "Unknown");
+
+
+            _mainWindowViewModel.ShowShell(
+                _mainShellViewModel);
         }
         catch
         {

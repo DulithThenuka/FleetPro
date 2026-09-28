@@ -52,6 +52,10 @@ public partial class App : System.Windows.Application
         services.AddScoped<
     IVehicleService,
     VehicleService>();
+
+        services.AddTransient<VehiclesViewModel>();
+
+        services.AddTransient<MainShellViewModel>();
     }
 
     protected override async void OnStartup(

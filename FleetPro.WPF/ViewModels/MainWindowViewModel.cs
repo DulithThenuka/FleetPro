@@ -7,18 +7,15 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private ObservableObject? currentViewModel;
 
-    public void ShowLogin(LoginViewModel loginViewModel)
+    public void ShowLogin(
+        LoginViewModel loginViewModel)
     {
         CurrentViewModel = loginViewModel;
     }
 
-    public void ShowDashboard(
-        string username,
-        string role)
+    public void ShowShell(
+        MainShellViewModel shellViewModel)
     {
-        CurrentViewModel =
-            new DashboardViewModel(
-                username,
-                role);
+        CurrentViewModel = shellViewModel;
     }
 }
