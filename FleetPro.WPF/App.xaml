@@ -22,6 +22,10 @@
     <views:MainShellView />
 </DataTemplate>
 
+<DataTemplate DataType="{x:Type viewModels:VehicleFormViewModel}">
+    <views:VehicleFormView />
+</DataTemplate>
+
     </Application.Resources>
 
 </Application>

@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using FleetPro.Application.DTOs;
 using FleetPro.Application.Interfaces;
 
@@ -21,6 +22,8 @@ public partial class VehiclesViewModel : ObservableObject
     [ObservableProperty]
     private string statusMessage = string.Empty;
 
+    public event EventHandler? AddVehicleRequested;
+
     public VehiclesViewModel(
         IVehicleService vehicleService)
     {
@@ -32,9 +35,12 @@ public partial class VehiclesViewModel : ObservableObject
         try
         {
             IsLoading = true;
-            StatusMessage = "Loading vehicles...";
 
-            var vehicles = await _vehicleService.GetAllAsync();
+            StatusMessage =
+                "Loading vehicles...";
+
+            var vehicles =
+                await _vehicleService.GetAllAsync();
 
             Vehicles.Clear();
 
@@ -46,7 +52,7 @@ public partial class VehiclesViewModel : ObservableObject
             StatusMessage =
                 $"{Vehicles.Count} vehicle(s) found.";
         }
-        catch (Exception)
+        catch
         {
             StatusMessage =
                 "Unable to load vehicles.";
@@ -55,5 +61,13 @@ public partial class VehiclesViewModel : ObservableObject
         {
             IsLoading = false;
         }
+    }
+
+    [RelayCommand]
+    private void AddVehicle()
+    {
+        AddVehicleRequested?.Invoke(
+            this,
+            EventArgs.Empty);
     }
 }

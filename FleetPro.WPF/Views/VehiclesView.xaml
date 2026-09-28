@@ -29,7 +29,7 @@
             </StackPanel>
 
             <Button Content="+ Add Vehicle"
-                    DockPanel.Dock="Right"
+                    Command="{Binding AddVehicleCommand}"
                     Width="130"
                     Height="40"/>
 

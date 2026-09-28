@@ -56,6 +56,8 @@ public partial class App : System.Windows.Application
         services.AddTransient<VehiclesViewModel>();
 
         services.AddTransient<MainShellViewModel>();
+
+        services.AddTransient<VehicleFormViewModel>();
     }
 
     protected override async void OnStartup(

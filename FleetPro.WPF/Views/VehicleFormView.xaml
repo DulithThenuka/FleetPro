@@ -1,0 +1,331 @@
+<UserControl x:Class="FleetPro.WPF.Views.VehicleFormView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+        <Grid Margin="30">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Text="Add Vehicle"
+                       FontSize="30"
+                       FontWeight="Bold"/>
+
+            <TextBlock Grid.Row="1"
+                       Text="Register a new vehicle in the fleet"
+                       Foreground="Gray"
+                       Margin="0,5,0,25"/>
+
+
+            <!-- Row 2 -->
+            <Grid Grid.Row="2"
+                  Margin="0,0,0,15">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0"
+                            Margin="0,0,10,0">
+
+                    <TextBlock Text="Registration Number"
+                               FontWeight="SemiBold"/>
+
+                    <TextBox Text="{Binding RegistrationNumber,
+                                            UpdateSourceTrigger=PropertyChanged}"
+                             Height="38"
+                             Margin="0,6,0,0"
+                             Padding="10"/>
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Margin="10,0,0,0">
+
+                    <TextBlock Text="VIN"/>
+
+                    <TextBox Text="{Binding VIN,
+                                            UpdateSourceTrigger=PropertyChanged}"
+                             Height="38"
+                             Margin="0,6,0,0"
+                             Padding="10"/>
+
+                </StackPanel>
+
+            </Grid>
+
+
+            <!-- Row 3 -->
+            <Grid Grid.Row="3"
+                  Margin="0,0,0,15">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0"
+                            Margin="0,0,10,0">
+
+                    <TextBlock Text="Brand"
+                               FontWeight="SemiBold"/>
+
+                    <TextBox Text="{Binding Brand,
+                                            UpdateSourceTrigger=PropertyChanged}"
+                             Height="38"
+                             Margin="0,6,0,0"
+                             Padding="10"/>
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Margin="10,0,0,0">
+
+                    <TextBlock Text="Model"
+                               FontWeight="SemiBold"/>
+
+                    <TextBox Text="{Binding Model,
+                                            UpdateSourceTrigger=PropertyChanged}"
+                             Height="38"
+                             Margin="0,6,0,0"
+                             Padding="10"/>
+
+                </StackPanel>
+
+            </Grid>
+
+
+            <!-- Row 4 -->
+            <Grid Grid.Row="4"
+                  Margin="0,0,0,15">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0"
+                            Margin="0,0,10,0">
+
+                    <TextBlock Text="Vehicle Type"
+                               FontWeight="SemiBold"/>
+
+                    <ComboBox ItemsSource="{Binding VehicleTypes}"
+                              DisplayMemberPath="Name"
+                              SelectedValuePath="Id"
+                              SelectedValue="{Binding SelectedVehicleTypeId}"
+                              Height="38"
+                              Margin="0,6,0,0"/>
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Margin="10,0,0,0">
+
+                    <TextBlock Text="Branch"
+                               FontWeight="SemiBold"/>
+
+                    <ComboBox ItemsSource="{Binding Branches}"
+                              DisplayMemberPath="Name"
+                              SelectedValuePath="Id"
+                              SelectedValue="{Binding SelectedBranchId}"
+                              Height="38"
+                              Margin="0,6,0,0"/>
+
+                </StackPanel>
+
+            </Grid>
+
+
+            <!-- Row 5 -->
+            <Grid Grid.Row="5"
+                  Margin="0,0,0,15">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0"
+                            Margin="0,0,10,0">
+
+                    <TextBlock Text="Manufacturing Year"
+                               FontWeight="SemiBold"/>
+
+                    <TextBox Text="{Binding ManufacturingYear,
+                                            UpdateSourceTrigger=PropertyChanged}"
+                             Height="38"
+                             Margin="0,6,0,0"
+                             Padding="10"/>
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Margin="10,0,0,0">
+
+                    <TextBlock Text="Engine Number"/>
+
+                    <TextBox Text="{Binding EngineNumber,
+                                            UpdateSourceTrigger=PropertyChanged}"
+                             Height="38"
+                             Margin="0,6,0,0"
+                             Padding="10"/>
+
+                </StackPanel>
+
+            </Grid>
+
+
+            <!-- Row 6 -->
+            <Grid Grid.Row="6"
+                  Margin="0,0,0,15">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0"
+                            Margin="0,0,10,0">
+
+                    <TextBlock Text="Fuel Type"
+                               FontWeight="SemiBold"/>
+
+                    <ComboBox ItemsSource="{Binding FuelTypes}"
+                              SelectedItem="{Binding SelectedFuelType}"
+                              Height="38"
+                              Margin="0,6,0,0"/>
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Margin="10,0,0,0">
+
+                    <TextBlock Text="Transmission"
+                               FontWeight="SemiBold"/>
+
+                    <ComboBox ItemsSource="{Binding TransmissionTypes}"
+                              SelectedItem="{Binding SelectedTransmission}"
+                              Height="38"
+                              Margin="0,6,0,0"/>
+
+                </StackPanel>
+
+            </Grid>
+
+
+            <!-- Additional fields -->
+            <Grid Grid.Row="7"
+                  Margin="0,0,0,15">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0"
+                            Margin="0,0,10,0">
+
+                    <TextBlock Text="Current Mileage"
+                               FontWeight="SemiBold"/>
+
+                    <TextBox Text="{Binding CurrentMileage,
+                                            UpdateSourceTrigger=PropertyChanged}"
+                             Height="38"
+                             Margin="0,6,0,0"
+                             Padding="10"/>
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Margin="10,0,0,0">
+
+                    <TextBlock Text="Purchase Price"/>
+
+                    <TextBox Text="{Binding PurchasePrice,
+                                            UpdateSourceTrigger=PropertyChanged}"
+                             Height="38"
+                             Margin="0,6,0,0"
+                             Padding="10"/>
+
+                </StackPanel>
+
+            </Grid>
+
+
+            <Grid Grid.Row="8"
+                  Margin="0,0,0,15">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0"
+                            Margin="0,0,10,0">
+
+                    <TextBlock Text="Purchase Date"/>
+
+                    <DatePicker SelectedDate="{Binding PurchaseDate}"
+                                Height="38"
+                                Margin="0,6,0,0"/>
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Margin="10,0,0,0">
+
+                    <TextBlock Text="Color"/>
+
+                    <TextBox Text="{Binding Color,
+                                            UpdateSourceTrigger=PropertyChanged}"
+                             Height="38"
+                             Margin="0,6,0,0"
+                             Padding="10"/>
+
+                </StackPanel>
+
+            </Grid>
+
+
+            <TextBlock Grid.Row="9"
+                       Text="{Binding FormMessage}"
+                       Foreground="IndianRed"
+                       FontSize="14"
+                       TextWrapping="Wrap"
+                       Margin="0,5,0,15"/>
+
+
+            <StackPanel Grid.Row="10"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+
+                <Button Content="Cancel"
+                        Command="{Binding CancelCommand}"
+                        Width="100"
+                        Height="40"
+                        Margin="0,0,10,0"/>
+
+                <Button Content="Save Vehicle"
+                        Command="{Binding SaveCommand}"
+                        Width="130"
+                        Height="40"/>
+
+            </StackPanel>
+
+        </Grid>
+
+    </ScrollViewer>
+
+</UserControl>

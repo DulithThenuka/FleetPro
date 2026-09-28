@@ -39,10 +39,23 @@ public class VehicleRepository : IVehicleRepository
     {
         return await _context.Vehicles
             .AnyAsync(x =>
-                x.RegistrationNumber
-                    .ToUpper() ==
-                registrationNumber
-                    .ToUpper());
+                x.RegistrationNumber.ToUpper() ==
+                registrationNumber.ToUpper());
+    }
+
+    public async Task<List<Branch>> GetBranchesAsync()
+    {
+        return await _context.Branches
+            .Where(x => x.IsActive)
+            .OrderBy(x => x.BranchName)
+            .ToListAsync();
+    }
+
+    public async Task<List<VehicleType>> GetVehicleTypesAsync()
+    {
+        return await _context.VehicleTypes
+            .OrderBy(x => x.Name)
+            .ToListAsync();
     }
 
     public async Task AddAsync(Vehicle vehicle)
