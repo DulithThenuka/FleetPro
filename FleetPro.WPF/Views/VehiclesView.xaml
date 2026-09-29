@@ -11,7 +11,9 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
+
+        <!-- HEADER -->
+
         <DockPanel Grid.Row="0"
                    Margin="0,0,0,20">
 
@@ -30,13 +32,15 @@
 
             <Button Content="+ Add Vehicle"
                     Command="{Binding AddVehicleCommand}"
-                    Width="130"
+                    DockPanel.Dock="Right"
+                    Width="135"
                     Height="40"/>
 
         </DockPanel>
 
 
-        <!-- Search -->
+        <!-- SEARCH -->
+
         <Border Grid.Row="1"
                 Background="White"
                 Padding="15"
@@ -50,18 +54,11 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBox Grid.Column="0"
-                         Height="38"
+                         Height="40"
+                         Padding="10"
                          Text="{Binding SearchText,
-                                        UpdateSourceTrigger=PropertyChanged}"
-                         VerticalContentAlignment="Center"
-                         Padding="10"/>
-
-                <TextBlock Grid.Column="0"
-                           Text="Search registration, brand or model..."
-                           Foreground="Gray"
-                           VerticalAlignment="Center"
-                           Margin="12,0,0,0"
-                           IsHitTestVisible="False"/>
+                                UpdateSourceTrigger=PropertyChanged}"
+                         VerticalContentAlignment="Center"/>
 
                 <TextBlock Grid.Column="1"
                            Text="{Binding StatusMessage}"
@@ -74,75 +71,269 @@
         </Border>
 
 
-        <!-- Vehicle table -->
-        <Border Grid.Row="2"
-                Background="White"
-                Padding="15">
+        <!-- CONTENT -->
 
-            <DataGrid ItemsSource="{Binding Vehicles}"
-                      AutoGenerateColumns="False"
-                      IsReadOnly="True"
-                      CanUserAddRows="False"
-                      HeadersVisibility="Column">
+        <Grid Grid.Row="2">
 
-                <DataGrid.Columns>
+            <Grid.ColumnDefinitions>
 
-                    <DataGridTextColumn Header="Registration"
-                                        Binding="{Binding RegistrationNumber}"
-                                        Width="150"/>
+                <ColumnDefinition Width="2.2*"/>
 
-                    <DataGridTextColumn Header="Brand"
-                                        Binding="{Binding Brand}"
-                                        Width="120"/>
+                <ColumnDefinition Width="1*"/>
 
-                    <DataGridTextColumn Header="Model"
-                                        Binding="{Binding Model}"
-                                        Width="120"/>
+            </Grid.ColumnDefinitions>
 
-                    <DataGridTextColumn Header="Type"
-                                        Binding="{Binding VehicleType}"
-                                        Width="120"/>
 
-                    <DataGridTextColumn Header="Branch"
-                                        Binding="{Binding Branch}"
-                                        Width="120"/>
+            <!-- VEHICLE LIST -->
 
-                    <DataGridTextColumn Header="Fuel"
-                                        Binding="{Binding FuelType}"
-                                        Width="100"/>
+            <Border Grid.Column="0"
+                    Background="White"
+                    Padding="15"
+                    Margin="0,0,10,0">
 
-                    <DataGridTextColumn Header="Mileage"
-                                        Binding="{Binding CurrentMileage}"
-                                        Width="110"/>
+                <DataGrid ItemsSource="{Binding Vehicles}"
+                          SelectedItem="{Binding SelectedVehicle,
+                                          Mode=TwoWay}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False"
+                          SelectionMode="Single">
 
-                    <DataGridTextColumn Header="Status"
-                                        Binding="{Binding Status}"
-                                        Width="150"/>
-                    <DataGridTemplateColumn Header="Actions"
-                        Width="100">
+                    <DataGrid.Columns>
 
-    <DataGridTemplateColumn.CellTemplate>
+                        <DataGridTextColumn
+                            Header="Registration"
+                            Binding="{Binding RegistrationNumber}"
+                            Width="140"/>
 
-        <DataTemplate>
+                        <DataGridTextColumn
+                            Header="Brand"
+                            Binding="{Binding Brand}"
+                            Width="110"/>
 
-            <Button Content="Edit"
-                    Command="{Binding DataContext.EditVehicleCommand,
-                                      RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                    CommandParameter="{Binding}"
-                    Width="65"
-                    Height="30"/>
+                        <DataGridTextColumn
+                            Header="Model"
+                            Binding="{Binding Model}"
+                            Width="110"/>
 
-        </DataTemplate>
+                        <DataGridTextColumn
+                            Header="Type"
+                            Binding="{Binding VehicleType}"
+                            Width="100"/>
 
-    </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTextColumn
+                            Header="Branch"
+                            Binding="{Binding Branch}"
+                            Width="110"/>
 
-</DataGridTemplateColumn>
+                        <DataGridTextColumn
+                            Header="Mileage"
+                            Binding="{Binding CurrentMileage}"
+                            Width="100"/>
 
-                </DataGrid.Columns>
+                        <DataGridTextColumn
+                            Header="Status"
+                            Binding="{Binding Status}"
+                            Width="130"/>
 
-            </DataGrid>
+                    </DataGrid.Columns>
 
-        </Border>
+                </DataGrid>
+
+            </Border>
+
+
+            <!-- DETAILS -->
+
+            <Border Grid.Column="1"
+                    Background="White"
+                    Padding="25"
+                    Margin="10,0,0,0">
+
+                <ScrollViewer
+                    VerticalScrollBarVisibility="Auto">
+
+                    <StackPanel>
+
+                        <TextBlock Text="Vehicle Details"
+                                   FontSize="22"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock Text="Select a vehicle from the list"
+                                   Foreground="Gray"
+                                   Margin="0,5,0,25"/>
+
+
+                        <!-- Registration -->
+
+                        <TextBlock Text="Registration Number"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.RegistrationNumber}"
+                            FontSize="16"
+                            Margin="0,4,0,15"/>
+
+
+                        <!-- Brand / Model -->
+
+                        <TextBlock Text="Brand"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.Brand}"
+                            Margin="0,4,0,12"/>
+
+
+                        <TextBlock Text="Model"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.Model}"
+                            Margin="0,4,0,12"/>
+
+
+                        <!-- Type -->
+
+                        <TextBlock Text="Vehicle Type"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.VehicleType}"
+                            Margin="0,4,0,12"/>
+
+
+                        <!-- Branch -->
+
+                        <TextBlock Text="Branch"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.Branch}"
+                            Margin="0,4,0,12"/>
+
+
+                        <!-- Year -->
+
+                        <TextBlock Text="Manufacturing Year"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.ManufacturingYear}"
+                            Margin="0,4,0,12"/>
+
+
+                        <!-- Fuel -->
+
+                        <TextBlock Text="Fuel Type"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.FuelType}"
+                            Margin="0,4,0,12"/>
+
+
+                        <!-- Transmission -->
+
+                        <TextBlock Text="Transmission"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.Transmission}"
+                            Margin="0,4,0,12"/>
+
+
+                        <!-- Mileage -->
+
+                        <TextBlock Text="Current Mileage"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.CurrentMileage}"
+                            Margin="0,4,0,12"/>
+
+
+                        <!-- Color -->
+
+                        <TextBlock Text="Color"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.Color}"
+                            Margin="0,4,0,12"/>
+
+
+                        <!-- VIN -->
+
+                        <TextBlock Text="VIN"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.VIN}"
+                            Margin="0,4,0,12"/>
+
+
+                        <!-- Engine -->
+
+                        <TextBlock Text="Engine Number"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.EngineNumber}"
+                            Margin="0,4,0,12"/>
+
+
+                        <!-- Purchase -->
+
+                        <TextBlock Text="Purchase Date"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.PurchaseDate}"
+                            Margin="0,4,0,12"/>
+
+
+                        <TextBlock Text="Purchase Price"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.PurchasePrice,
+                                           StringFormat={}{0:N2}}"
+                            Margin="0,4,0,12"/>
+
+
+                        <!-- Status -->
+
+                        <TextBlock Text="Status"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding SelectedVehicle.Status}"
+                            FontWeight="SemiBold"
+                            Margin="0,4,0,20"/>
+
+
+                        <!-- Actions -->
+
+                        <StackPanel Orientation="Horizontal">
+
+                            <Button Content="Edit"
+                                    Command="{Binding EditVehicleCommand}"
+                                    CommandParameter="{Binding SelectedVehicle}"
+                                    Width="90"
+                                    Height="38"
+                                    Margin="0,0,10,0"
+                                    IsEnabled="{Binding HasSelectedVehicle}"/>
+
+                        </StackPanel>
+
+                    </StackPanel>
+
+                </ScrollViewer>
+
+            </Border>
+
+        </Grid>
 
     </Grid>
 

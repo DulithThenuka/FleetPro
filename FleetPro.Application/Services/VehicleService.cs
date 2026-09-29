@@ -16,30 +16,69 @@ public class VehicleService : IVehicleService
     }
 
     public async Task<List<VehicleListItemDto>> GetAllAsync()
-    {
-        var vehicles =
-            await _repository.GetAllAsync();
+{
+    var vehicles =
+        await _repository.GetAllAsync();
 
-        return vehicles.Select(x =>
-            new VehicleListItemDto
-            {
-                VehicleId = x.VehicleId,
-                RegistrationNumber =
-                    x.RegistrationNumber,
-                Brand = x.Brand,
-                Model = x.Model,
-                VehicleType =
-                    x.VehicleType.Name,
-                Branch =
-                    x.Branch.BranchName,
-                FuelType =
-                    x.FuelType.ToString(),
-                Status =
-                    x.Status.ToString(),
-                CurrentMileage =
-                    x.CurrentMileage
-            }).ToList();
-    }
+    return vehicles.Select(x =>
+        new VehicleListItemDto
+        {
+            VehicleId =
+                x.VehicleId,
+
+            RegistrationNumber =
+                x.RegistrationNumber,
+
+            VIN =
+                x.VIN,
+
+            EngineNumber =
+                x.EngineNumber,
+
+            Brand =
+                x.Brand,
+
+            Model =
+                x.Model,
+
+            ManufacturingYear =
+                x.ManufacturingYear,
+
+            VehicleTypeId =
+                x.VehicleTypeId,
+
+            VehicleType =
+                x.VehicleType.Name,
+
+            BranchId =
+                x.BranchId,
+
+            Branch =
+                x.Branch.BranchName,
+
+            FuelType =
+                x.FuelType,
+
+            Transmission =
+                x.Transmission,
+
+            Color =
+                x.Color,
+
+            PurchaseDate =
+                x.PurchaseDate,
+
+            PurchasePrice =
+                x.PurchasePrice,
+
+            CurrentMileage =
+                x.CurrentMileage,
+
+            Status =
+                x.Status.ToString()
+
+        }).ToList();
+}
 
     public async Task<List<LookupItemDto>>
         GetBranchesAsync()
