@@ -33,6 +33,9 @@ public partial class MainShellViewModel : ObservableObject
 
         _vehiclesViewModel.AddVehicleRequested +=
     OnAddVehicleRequested;
+
+    _vehiclesViewModel.EditVehicleRequested +=
+    OnEditVehicleRequested;
     }
 
     public void SetUser(
@@ -87,6 +90,16 @@ public partial class MainShellViewModel : ObservableObject
     EventArgs e)
 {
     await _vehicleFormViewModel.LoadAsync();
+
+    CurrentPage =
+        _vehicleFormViewModel;
+}
+private async void OnEditVehicleRequested(
+    object? sender,
+    VehicleEditRequestedEventArgs e)
+{
+    await _vehicleFormViewModel
+        .LoadForEditAsync(e.VehicleId);
 
     CurrentPage =
         _vehicleFormViewModel;

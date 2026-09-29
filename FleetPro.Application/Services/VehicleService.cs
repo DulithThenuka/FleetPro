@@ -188,4 +188,200 @@ public class VehicleService : IVehicleService
         return (true,
             "Vehicle registered successfully.");
     }
+
+    public async Task<VehicleDetailsDto?> GetByIdAsync(
+    int vehicleId)
+{
+    var vehicle =
+        await _repository.GetByIdAsync(vehicleId);
+
+    if (vehicle == null)
+    {
+        return null;
+    }
+
+    return new VehicleDetailsDto
+    {
+        VehicleId = vehicle.VehicleId,
+
+        RegistrationNumber =
+            vehicle.RegistrationNumber,
+
+        VIN = vehicle.VIN,
+
+        EngineNumber =
+            vehicle.EngineNumber,
+
+        VehicleTypeId =
+            vehicle.VehicleTypeId,
+
+        BranchId =
+            vehicle.BranchId,
+
+        Brand =
+            vehicle.Brand,
+
+        Model =
+            vehicle.Model,
+
+        ManufacturingYear =
+            vehicle.ManufacturingYear,
+
+        FuelType =
+            vehicle.FuelType,
+
+        Transmission =
+            vehicle.Transmission,
+
+        Color =
+            vehicle.Color,
+
+        PurchaseDate =
+            vehicle.PurchaseDate,
+
+        PurchasePrice =
+            vehicle.PurchasePrice,
+
+        CurrentMileage =
+            vehicle.CurrentMileage,
+
+        Status =
+            vehicle.Status
+    };
+}
+public async Task<(bool Success, string Message)>
+    UpdateAsync(UpdateVehicleRequest request)
+{
+    var vehicle =
+        await _repository.GetByIdAsync(
+            request.VehicleId);
+
+    if (vehicle == null)
+    {
+        return (false,
+            "Vehicle could not be found.");
+    }
+
+    var registration =
+        request.RegistrationNumber.Trim();
+
+    if (string.IsNullOrWhiteSpace(registration))
+    {
+        return (false,
+            "Registration number is required.");
+    }
+
+    if (string.IsNullOrWhiteSpace(request.Brand))
+    {
+        return (false,
+            "Brand is required.");
+    }
+
+    if (string.IsNullOrWhiteSpace(request.Model))
+    {
+        return (false,
+            "Model is required.");
+    }
+
+    if (request.VehicleTypeId <= 0)
+    {
+        return (false,
+            "Please select a vehicle type.");
+    }
+
+    if (request.BranchId <= 0)
+    {
+        return (false,
+            "Please select a branch.");
+    }
+
+    if (request.ManufacturingYear < 1900 ||
+        request.ManufacturingYear >
+        DateTime.UtcNow.Year + 1)
+    {
+        return (false,
+            "Please enter a valid manufacturing year.");
+    }
+
+    if (request.CurrentMileage < 0)
+    {
+        return (false,
+            "Mileage cannot be negative.");
+    }
+
+    if (request.PurchasePrice is < 0)
+    {
+        return (false,
+            "Purchase price cannot be negative.");
+    }
+
+    var duplicateRegistration =
+        await _repository
+            .RegistrationExistsAsync(registration);
+
+    if (duplicateRegistration &&
+        !string.Equals(
+            vehicle.RegistrationNumber,
+            registration,
+            StringComparison.OrdinalIgnoreCase))
+    {
+        return (false,
+            "Another vehicle already uses this registration.");
+    }
+
+    vehicle.RegistrationNumber = registration;
+
+    vehicle.VIN =
+        string.IsNullOrWhiteSpace(request.VIN)
+            ? null
+            : request.VIN.Trim();
+
+    vehicle.EngineNumber =
+        string.IsNullOrWhiteSpace(request.EngineNumber)
+            ? null
+            : request.EngineNumber.Trim();
+
+    vehicle.VehicleTypeId =
+        request.VehicleTypeId;
+
+    vehicle.BranchId =
+        request.BranchId;
+
+    vehicle.Brand =
+        request.Brand.Trim();
+
+    vehicle.Model =
+        request.Model.Trim();
+
+    vehicle.ManufacturingYear =
+        request.ManufacturingYear;
+
+    vehicle.FuelType =
+        request.FuelType;
+
+    vehicle.Transmission =
+        request.Transmission;
+
+    vehicle.Color =
+        string.IsNullOrWhiteSpace(request.Color)
+            ? null
+            : request.Color.Trim();
+
+    vehicle.PurchaseDate =
+        request.PurchaseDate;
+
+    vehicle.PurchasePrice =
+        request.PurchasePrice;
+
+    vehicle.CurrentMileage =
+        request.CurrentMileage;
+
+    vehicle.UpdatedAt =
+        DateTime.UtcNow;
+
+    await _repository.SaveChangesAsync();
+
+    return (true,
+        "Vehicle updated successfully.");
+}
 }

@@ -71,6 +71,22 @@ public partial class VehicleFormViewModel : ObservableObject
     private string formMessage = string.Empty;
 
     [ObservableProperty]
+private int vehicleId;
+
+[ObservableProperty]
+private bool isEditMode;
+
+public string FormTitle =>
+    IsEditMode
+        ? "Edit Vehicle"
+        : "Add Vehicle";
+
+public string SaveButtonText =>
+    IsEditMode
+        ? "Update Vehicle"
+        : "Save Vehicle";
+
+    [ObservableProperty]
     private bool isSaving;
 
     public event EventHandler? RequestClose;
@@ -82,76 +98,111 @@ public partial class VehicleFormViewModel : ObservableObject
     }
 
     public async Task LoadAsync()
+{
+    // Reset form state
+    VehicleId = 0;
+    IsEditMode = false;
+
+    RegistrationNumber = string.Empty;
+    Vin = string.Empty;
+    EngineNumber = string.Empty;
+
+    Brand = string.Empty;
+    Model = string.Empty;
+
+    ManufacturingYear = string.Empty;
+    Color = string.Empty;
+
+    PurchaseDate = null;
+    PurchasePrice = string.Empty;
+    CurrentMileage = "0";
+
+    SelectedFuelType = FuelType.Petrol;
+    SelectedTransmission = TransmissionType.Manual;
+
+    FormMessage = string.Empty;
+
+
+    Branches.Clear();
+    VehicleTypes.Clear();
+
+    var branches =
+        await _vehicleService.GetBranchesAsync();
+
+    var vehicleTypes =
+        await _vehicleService.GetVehicleTypesAsync();
+
+    foreach (var branch in branches)
     {
-        Branches.Clear();
-        VehicleTypes.Clear();
-
-        var branches =
-            await _vehicleService.GetBranchesAsync();
-
-        var vehicleTypes =
-            await _vehicleService.GetVehicleTypesAsync();
-
-        foreach (var branch in branches)
-        {
-            Branches.Add(branch);
-        }
-
-        foreach (var type in vehicleTypes)
-        {
-            VehicleTypes.Add(type);
-        }
-
-        if (Branches.Count > 0)
-        {
-            SelectedBranchId = Branches[0].Id;
-        }
-
-        if (VehicleTypes.Count > 0)
-        {
-            SelectedVehicleTypeId =
-                VehicleTypes[0].Id;
-        }
+        Branches.Add(branch);
     }
 
-    [RelayCommand]
-    private async Task Save()
+    foreach (var type in vehicleTypes)
     {
-        FormMessage = string.Empty;
+        VehicleTypes.Add(type);
+    }
 
-        if (!int.TryParse(
-                ManufacturingYear,
-                out var year))
+    if (Branches.Count > 0)
+    {
+        SelectedBranchId = Branches[0].Id;
+    }
+
+    if (VehicleTypes.Count > 0)
+    {
+        SelectedVehicleTypeId =
+            VehicleTypes[0].Id;
+    }
+}
+
+    [RelayCommand]
+private async Task Save()
+{
+    FormMessage = string.Empty;
+
+    if (!int.TryParse(
+            ManufacturingYear,
+            out var year))
+    {
+        FormMessage =
+            "Manufacturing year must be a valid number.";
+
+        return;
+    }
+
+    if (!decimal.TryParse(
+            CurrentMileage,
+            out var mileage))
+    {
+        FormMessage =
+            "Mileage must be a valid number.";
+
+        return;
+    }
+
+    decimal purchasePrice = 0;
+
+    if (!string.IsNullOrWhiteSpace(PurchasePrice) &&
+        !decimal.TryParse(
+            PurchasePrice,
+            out purchasePrice))
+    {
+        FormMessage =
+            "Purchase price must be a valid number.";
+
+        return;
+    }
+
+    try
+    {
+        IsSaving = true;
+
+        if (IsEditMode)
         {
-            FormMessage =
-                "Manufacturing year must be a valid number.";
-
-            return;
-        }
-
-        if (!decimal.TryParse(
-                PurchasePrice,
-                out var purchasePrice))
-        {
-            purchasePrice = 0;
-        }
-
-        if (!decimal.TryParse(
-                CurrentMileage,
-                out var mileage))
-        {
-            FormMessage =
-                "Mileage must be a valid number.";
-
-            return;
-        }
-
-        try
-        {
-            IsSaving = true;
-
-            var request = new CreateVehicleRequest
+            var request = new UpdateVehicleRequest
             {
+                VehicleId =
+                    VehicleId,
+
                 RegistrationNumber =
                     RegistrationNumber,
 
@@ -196,7 +247,7 @@ public partial class VehicleFormViewModel : ObservableObject
 
             var result =
                 await _vehicleService
-                .CreateAsync(request);
+                    .UpdateAsync(request);
 
             FormMessage =
                 result.Message;
@@ -208,16 +259,80 @@ public partial class VehicleFormViewModel : ObservableObject
                     EventArgs.Empty);
             }
         }
-        catch
+        else
         {
+            var request = new CreateVehicleRequest
+            {
+                RegistrationNumber =
+                    RegistrationNumber,
+
+                VIN =
+                    Vin,
+
+                EngineNumber =
+                    EngineNumber,
+
+                VehicleTypeId =
+                    SelectedVehicleTypeId,
+
+                BranchId =
+                    SelectedBranchId,
+
+                Brand =
+                    Brand,
+
+                Model =
+                    Model,
+
+                ManufacturingYear =
+                    year,
+
+                FuelType =
+                    SelectedFuelType,
+
+                Transmission =
+                    SelectedTransmission,
+
+                Color =
+                    Color,
+
+                PurchaseDate =
+                    PurchaseDate,
+
+                PurchasePrice =
+                    purchasePrice,
+
+                CurrentMileage =
+                    mileage
+            };
+
+            var result =
+                await _vehicleService
+                    .CreateAsync(request);
+
             FormMessage =
-                "Unable to save the vehicle.";
-        }
-        finally
-        {
-            IsSaving = false;
+                result.Message;
+
+            if (result.Success)
+            {
+                RequestClose?.Invoke(
+                    this,
+                    EventArgs.Empty);
+            }
         }
     }
+    catch
+    {
+        FormMessage =
+            IsEditMode
+                ? "Unable to update the vehicle."
+                : "Unable to save the vehicle.";
+    }
+    finally
+    {
+        IsSaving = false;
+    }
+}
 
     [RelayCommand]
     private void Cancel()
@@ -226,4 +341,77 @@ public partial class VehicleFormViewModel : ObservableObject
             this,
             EventArgs.Empty);
     }
+
+    partial void OnIsEditModeChanged(bool value)
+{
+    OnPropertyChanged(nameof(FormTitle));
+    OnPropertyChanged(nameof(SaveButtonText));
+}
+public async Task LoadForEditAsync(
+    int vehicleId)
+{
+    await LoadAsync();
+
+    var vehicle =
+        await _vehicleService
+            .GetByIdAsync(vehicleId);
+
+    if (vehicle == null)
+    {
+        FormMessage =
+            "Vehicle could not be found.";
+
+        return;
+    }
+
+    VehicleId =
+        vehicle.VehicleId;
+
+    IsEditMode = true;
+
+    RegistrationNumber =
+        vehicle.RegistrationNumber;
+
+    Vin =
+        vehicle.VIN ?? string.Empty;
+
+    EngineNumber =
+        vehicle.EngineNumber ?? string.Empty;
+
+    SelectedVehicleTypeId =
+        vehicle.VehicleTypeId;
+
+    SelectedBranchId =
+        vehicle.BranchId;
+
+    Brand =
+        vehicle.Brand;
+
+    Model =
+        vehicle.Model;
+
+    ManufacturingYear =
+        vehicle.ManufacturingYear.ToString();
+
+    SelectedFuelType =
+        vehicle.FuelType;
+
+    SelectedTransmission =
+        vehicle.Transmission;
+
+    Color =
+        vehicle.Color ?? string.Empty;
+
+    PurchaseDate =
+        vehicle.PurchaseDate;
+
+    PurchasePrice =
+        vehicle.PurchasePrice?.ToString("0.##")
+        ?? "0";
+
+    CurrentMileage =
+        vehicle.CurrentMileage.ToString("0.##");
+
+    FormMessage = string.Empty;
+}
 }

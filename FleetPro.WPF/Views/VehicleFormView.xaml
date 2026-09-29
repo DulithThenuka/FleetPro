@@ -317,7 +317,7 @@
                         Height="40"
                         Margin="0,0,10,0"/>
 
-                <Button Content="Save Vehicle"
+                <Button Content="{Binding SaveButtonText}"
                         Command="{Binding SaveCommand}"
                         Width="130"
                         Height="40"/>

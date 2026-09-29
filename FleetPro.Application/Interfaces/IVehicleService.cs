@@ -6,10 +6,16 @@ public interface IVehicleService
 {
     Task<List<VehicleListItemDto>> GetAllAsync();
 
+    Task<VehicleDetailsDto?> GetByIdAsync(
+        int vehicleId);
+
     Task<List<LookupItemDto>> GetBranchesAsync();
 
     Task<List<LookupItemDto>> GetVehicleTypesAsync();
 
     Task<(bool Success, string Message)> CreateAsync(
         CreateVehicleRequest request);
+
+    Task<(bool Success, string Message)> UpdateAsync(
+        UpdateVehicleRequest request);
 }

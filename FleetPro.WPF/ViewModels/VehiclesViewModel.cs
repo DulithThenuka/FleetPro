@@ -70,4 +70,16 @@ public partial class VehiclesViewModel : ObservableObject
             this,
             EventArgs.Empty);
     }
+    public event EventHandler<VehicleEditRequestedEventArgs>?
+    EditVehicleRequested;
+
+    [RelayCommand]
+private void EditVehicle(
+    VehicleListItemDto vehicle)
+{
+    EditVehicleRequested?.Invoke(
+        this,
+        new VehicleEditRequestedEventArgs(
+            vehicle.VehicleId));
+}
 }
