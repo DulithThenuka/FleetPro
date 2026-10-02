@@ -7,6 +7,7 @@ using FleetPro.WPF.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+
 namespace FleetPro.WPF;
 
 public partial class App : System.Windows.Application
@@ -58,6 +59,11 @@ public partial class App : System.Windows.Application
         services.AddTransient<MainShellViewModel>();
 
         services.AddTransient<VehicleFormViewModel>();
+
+        services.AddScoped<IDriverService, DriverService>();
+
+        services.AddTransient<DriversViewModel>();
+services.AddTransient<DriverFormViewModel>();
     }
 
     protected override async void OnStartup(

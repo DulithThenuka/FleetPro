@@ -33,6 +33,8 @@ public static class DependencyInjection
     IVehicleRepository,
     VehicleRepository>();
 
+    services.AddScoped<IDriverRepository, DriverRepository>();
+
 
         return services;
     }

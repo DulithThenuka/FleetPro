@@ -16,6 +16,9 @@ public class Branch
 
     public bool IsActive { get; set; } = true;
 
+    public ICollection<Driver> Drivers { get; set; }
+    = new List<Driver>();
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public ICollection<Vehicle> Vehicles { get; set; }

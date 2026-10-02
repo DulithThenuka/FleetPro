@@ -1,0 +1,176 @@
+<UserControl x:Class="FleetPro.WPF.Views.DriversView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F5F7FA">
+
+    <Grid Margin="24">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+
+            <StackPanel>
+                <TextBlock Text="Drivers"
+                           FontSize="28"
+                           FontWeight="Bold"/>
+
+                <TextBlock Text="Manage drivers, licenses and vehicle assignments"
+                           Foreground="#6B7280"
+                           Margin="0,5,0,0"/>
+            </StackPanel>
+
+            <Button Content="+ Add Driver"
+                    HorizontalAlignment="Right"
+                    Padding="18,10"
+                    Command="{Binding AddDriverCommand}"/>
+        </Grid>
+
+        <!-- Search -->
+        <Grid Grid.Row="1" Margin="0,0,0,15">
+
+            <TextBox Width="320"
+                     Height="38"
+                     HorizontalAlignment="Left"
+                     VerticalContentAlignment="Center"
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                     ToolTip="Search drivers"/>
+
+            <Button Content="Refresh"
+                    HorizontalAlignment="Right"
+                    Padding="15,8"
+                    Command="{Binding RefreshCommand}"/>
+        </Grid>
+
+        <!-- Content -->
+        <Grid Grid.Row="2">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2.2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Driver table -->
+            <Border Grid.Column="0"
+                    Background="White"
+                    CornerRadius="10"
+                    Padding="10"
+                    Margin="0,0,12,0">
+
+                <DataGrid ItemsSource="{Binding Drivers}"
+                          SelectedItem="{Binding SelectedDriver}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False"
+                          HeadersVisibility="Column"
+                          GridLinesVisibility="Horizontal">
+
+                    <DataGrid.Columns>
+
+                        <DataGridTextColumn Header="Employee No."
+                                            Binding="{Binding EmployeeNumber}"
+                                            Width="120"/>
+
+                        <DataGridTextColumn Header="Driver"
+                                            Binding="{Binding FullName}"
+                                            Width="*"/>
+
+                        <DataGridTextColumn Header="License"
+                                            Binding="{Binding LicenseNumber}"
+                                            Width="130"/>
+
+                        <DataGridTextColumn Header="Expiry"
+                                            Binding="{Binding LicenseExpiryDate, StringFormat={}{0:yyyy-MM-dd}}"
+                                            Width="110"/>
+
+                        <DataGridTextColumn Header="Branch"
+                                            Binding="{Binding Branch}"
+                                            Width="130"/>
+
+                        <DataGridTextColumn Header="Status"
+                                            Binding="{Binding Status}"
+                                            Width="100"/>
+
+                        <DataGridCheckBoxColumn Header="Assigned"
+                                                Binding="{Binding HasActiveAssignment}"
+                                                Width="80"/>
+
+                    </DataGrid.Columns>
+
+                </DataGrid>
+            </Border>
+
+            <!-- Details -->
+            <Border Grid.Column="1"
+                    Background="White"
+                    CornerRadius="10"
+                    Padding="20">
+
+                <StackPanel>
+
+                    <TextBlock Text="Driver Details"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Margin="0,0,0,15"/>
+
+                    <TextBlock Text="{Binding SelectedDriver.FullName}"
+                               FontSize="22"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Text="{Binding SelectedDriver.EmployeeNumber}"
+                               Foreground="#6B7280"
+                               Margin="0,5,0,15"/>
+
+                    <TextBlock Text="License Number"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Text="{Binding SelectedDriver.LicenseNumber}"
+                               Margin="0,3,0,12"/>
+
+                    <TextBlock Text="License Expiry"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Text="{Binding SelectedDriver.LicenseExpiryDate, StringFormat={}{0:yyyy-MM-dd}}"
+                               Margin="0,3,0,12"/>
+
+                    <TextBlock Text="Branch"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Text="{Binding SelectedDriver.Branch}"
+                               Margin="0,3,0,12"/>
+
+                    <TextBlock Text="Status"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Text="{Binding SelectedDriver.Status}"
+                               Margin="0,3,0,12"/>
+
+                    <TextBlock Text="Assigned Vehicle"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Text="{Binding SelectedDriver.AssignedVehicle}"
+                               Margin="0,3,0,20"/>
+
+                    <Button Content="Assign Vehicle"
+                            Padding="15,10"
+                            Command="{Binding AssignVehicleCommand}"
+                            IsEnabled="{Binding HasSelectedDriver}"/>
+
+                    <TextBlock Text="{Binding StatusMessage}"
+                               Foreground="#B91C1C"
+                               TextWrapping="Wrap"
+                               Margin="0,15,0,0"/>
+
+                </StackPanel>
+
+            </Border>
+
+        </Grid>
+
+    </Grid>
+
+</UserControl>

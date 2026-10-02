@@ -19,12 +19,20 @@
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type viewModels:MainShellViewModel}">
-    <views:MainShellView />
-</DataTemplate>
+            <views:MainShellView />
+        </DataTemplate>
 
-<DataTemplate DataType="{x:Type viewModels:VehicleFormViewModel}">
-    <views:VehicleFormView />
-</DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:VehicleFormViewModel}">
+            <views:VehicleFormView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModels:DriversViewModel}">
+            <views:DriversView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModels:DriverFormViewModel}">
+            <views:DriverFormView />
+        </DataTemplate>
 
     </Application.Resources>
 

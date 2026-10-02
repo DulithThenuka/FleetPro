@@ -50,5 +50,12 @@ public class FleetProDbContext : DbContext
 
         modelBuilder.ApplyConfigurationsFromAssembly(
             typeof(FleetProDbContext).Assembly);
+
+            
     }
+
+    public DbSet<Driver> Drivers => Set<Driver>();
+
+public DbSet<VehicleAssignment> VehicleAssignments =>
+    Set<VehicleAssignment>();
 }

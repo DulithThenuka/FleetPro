@@ -21,10 +21,15 @@ public partial class MainShellViewModel : ObservableObject
     [ObservableProperty]
     private string role = string.Empty;
 
+    private readonly DriversViewModel _driversViewModel;
+private readonly DriverFormViewModel _driverFormViewModel;
+
     public MainShellViewModel(
     VehiclesViewModel vehiclesViewModel,
     VehicleFormViewModel vehicleFormViewModel,
-    IVehicleService vehicleService)
+    IVehicleService vehicleService,
+    DriversViewModel driversViewModel,
+    DriverFormViewModel driverFormViewModel)
 {
     _vehiclesViewModel =
         vehiclesViewModel;
@@ -43,6 +48,11 @@ public partial class MainShellViewModel : ObservableObject
 
     _vehiclesViewModel.EditVehicleRequested +=
         OnEditVehicleRequested;
+
+        _driversViewModel = driversViewModel;
+_driverFormViewModel = driverFormViewModel;
+
+_driversViewModel.AddDriverRequested += OnAddDriverRequested;
 }
 
     public async Task SetUser(string username, string role)
@@ -109,5 +119,23 @@ private async void OnEditVehicleRequested(
 
     CurrentPage =
         _vehicleFormViewModel;
+}
+private void OnAddDriverRequested(object? sender, EventArgs e)
+{
+    CurrentPage = _driverFormViewModel;
+
+    _ = LoadDriverFormAsync();
+}
+
+private async Task LoadDriverFormAsync()
+{
+    await _driverFormViewModel.LoadAsync();
+}
+[RelayCommand]
+private async Task OpenDrivers()
+{
+    CurrentPage = _driversViewModel;
+
+    await _driversViewModel.LoadAsync();
 }
 }

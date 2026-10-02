@@ -1,0 +1,136 @@
+<UserControl x:Class="FleetPro.WPF.Views.DriverFormView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F5F7FA">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+        <Grid Margin="30">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Text="{Binding FormTitle}"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Margin="0,0,0,25"/>
+
+            <!-- Employee -->
+            <StackPanel Grid.Row="1" Margin="0,0,0,15">
+                <TextBlock Text="Employee Number"
+                           FontWeight="SemiBold"/>
+
+                <TextBox Height="38"
+                         Margin="0,6,0,0"
+                         Text="{Binding EmployeeNumber, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+
+            <!-- Name -->
+            <StackPanel Grid.Row="2" Margin="0,0,0,15">
+                <TextBlock Text="Full Name"
+                           FontWeight="SemiBold"/>
+
+                <TextBox Height="38"
+                         Margin="0,6,0,0"
+                         Text="{Binding FullName, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+
+            <!-- NIC -->
+            <StackPanel Grid.Row="3" Margin="0,0,0,15">
+                <TextBlock Text="NIC"/>
+
+                <TextBox Height="38"
+                         Margin="0,6,0,0"
+                         Text="{Binding Nic, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+
+            <!-- Phone -->
+            <StackPanel Grid.Row="4" Margin="0,0,0,15">
+                <TextBlock Text="Phone"/>
+
+                <TextBox Height="38"
+                         Margin="0,6,0,0"
+                         Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+
+            <!-- License -->
+            <StackPanel Grid.Row="5" Margin="0,0,0,15">
+                <TextBlock Text="License Number"
+                           FontWeight="SemiBold"/>
+
+                <TextBox Height="38"
+                         Margin="0,6,0,0"
+                         Text="{Binding LicenseNumber, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+
+            <!-- License Category -->
+            <StackPanel Grid.Row="6" Margin="0,0,0,15">
+                <TextBlock Text="License Category"/>
+
+                <TextBox Height="38"
+                         Margin="0,6,0,0"
+                         Text="{Binding LicenseCategory, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+
+            <!-- Branch -->
+            <StackPanel Grid.Row="7" Margin="0,0,0,15">
+                <TextBlock Text="Branch"
+                           FontWeight="SemiBold"/>
+
+                <ComboBox Height="38"
+                          Margin="0,6,0,0"
+                          ItemsSource="{Binding Branches}"
+                          SelectedItem="{Binding SelectedBranch}"
+                          DisplayMemberPath="Name"/>
+            </StackPanel>
+
+            <!-- License expiry -->
+            <StackPanel Grid.Row="8" Margin="0,0,0,20">
+
+                <TextBlock Text="License Expiry"/>
+
+                <DatePicker Margin="0,6,0,15"
+                            SelectedDate="{Binding LicenseExpiryDate}"/>
+
+                <TextBlock Text="Joining Date"/>
+
+                <DatePicker Margin="0,6,0,15"
+                            SelectedDate="{Binding JoiningDate}"/>
+
+                <TextBlock Text="{Binding FormMessage}"
+                           Foreground="#B91C1C"
+                           TextWrapping="Wrap"/>
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Margin="0,20,0,0">
+
+                    <Button Content="Cancel"
+                            Padding="18,10"
+                            Margin="0,0,10,0"
+                            Command="{Binding CancelCommand}"/>
+
+                    <Button Content="{Binding SaveButtonText}"
+                            Padding="18,10"
+                            Command="{Binding SaveCommand}"
+                            IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBooleanConverter}}"/>
+
+                </StackPanel>
+
+            </StackPanel>
+
+        </Grid>
+
+    </ScrollViewer>
+
+</UserControl>

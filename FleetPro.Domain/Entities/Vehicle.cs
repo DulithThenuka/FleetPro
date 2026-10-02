@@ -48,4 +48,7 @@ public class Vehicle
     public Branch Branch { get; set; } = null!;
 
     public VehicleType VehicleType { get; set; } = null!;
+
+    public ICollection<VehicleAssignment> VehicleAssignments { get; set; }
+    = new List<VehicleAssignment>();
 }
