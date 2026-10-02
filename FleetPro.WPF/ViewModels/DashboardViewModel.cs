@@ -1,9 +1,13 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using FleetPro.Application.Interfaces;
 
 namespace FleetPro.WPF.ViewModels;
 
-public partial class DashboardViewModel : ObservableObject
+public partial class DashboardViewModel
+    : ObservableObject
 {
+    private readonly IVehicleService _vehicleService;
+
     [ObservableProperty]
     private string username = string.Empty;
 
@@ -14,26 +18,79 @@ public partial class DashboardViewModel : ObservableObject
     private int totalVehicles;
 
     [ObservableProperty]
-    private int activeVehicles;
+    private int availableVehicles;
+
+    [ObservableProperty]
+    private int assignedVehicles;
 
     [ObservableProperty]
     private int vehiclesUnderMaintenance;
 
     [ObservableProperty]
-    private int pendingMaintenance;
+    private int accidentVehicles;
+
+    [ObservableProperty]
+    private int retiredVehicles;
+
+    [ObservableProperty]
+    private bool isLoading;
+
+    [ObservableProperty]
+    private string statusMessage = string.Empty;
 
     public DashboardViewModel(
+        IVehicleService vehicleService)
+    {
+        _vehicleService = vehicleService;
+    }
+
+    public async Task LoadAsync(
         string username,
         string role)
     {
         Username = username;
         Role = role;
 
-        // Temporary values.
-        // These will come from SQL Server later.
-        TotalVehicles = 0;
-        ActiveVehicles = 0;
-        VehiclesUnderMaintenance = 0;
-        PendingMaintenance = 0;
+        try
+        {
+            IsLoading = true;
+
+            StatusMessage =
+                "Loading dashboard...";
+
+            var statistics =
+                await _vehicleService
+                    .GetStatisticsAsync();
+
+            TotalVehicles =
+                statistics.TotalVehicles;
+
+            AvailableVehicles =
+                statistics.AvailableVehicles;
+
+            AssignedVehicles =
+                statistics.AssignedVehicles;
+
+            VehiclesUnderMaintenance =
+                statistics.VehiclesUnderMaintenance;
+
+            AccidentVehicles =
+                statistics.AccidentVehicles;
+
+            RetiredVehicles =
+                statistics.RetiredVehicles;
+
+            StatusMessage =
+                "Dashboard updated successfully.";
+        }
+        catch
+        {
+            StatusMessage =
+                "Unable to load dashboard statistics.";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 }

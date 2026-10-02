@@ -18,4 +18,9 @@ public interface IVehicleService
 
     Task<(bool Success, string Message)> UpdateAsync(
         UpdateVehicleRequest request);
+
+    Task<VehicleStatisticsDto> GetStatisticsAsync();
+
+Task<(bool Success, string Message)> RetireAsync(
+    int vehicleId);
 }

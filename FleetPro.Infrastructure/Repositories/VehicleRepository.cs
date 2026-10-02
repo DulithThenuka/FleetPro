@@ -2,6 +2,7 @@ using FleetPro.Application.Interfaces;
 using FleetPro.Domain.Entities;
 using FleetPro.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using FleetPro.Application.DTOs;
 
 namespace FleetPro.Infrastructure.Repositories;
 
@@ -67,4 +68,48 @@ public class VehicleRepository : IVehicleRepository
     {
         await _context.SaveChangesAsync();
     }
+
+    public async Task<VehicleStatisticsDto> GetStatisticsAsync()
+{
+    return new VehicleStatisticsDto
+    {
+        TotalVehicles =
+            await _context.Vehicles.CountAsync(),
+
+        AvailableVehicles =
+            await _context.Vehicles.CountAsync(
+                x => x.Status ==
+                     Domain.Enums.VehicleStatus.Available),
+
+        AssignedVehicles =
+            await _context.Vehicles.CountAsync(
+                x => x.Status ==
+                     Domain.Enums.VehicleStatus.Assigned),
+
+        VehiclesUnderMaintenance =
+            await _context.Vehicles.CountAsync(
+                x => x.Status ==
+                     Domain.Enums.VehicleStatus.UnderMaintenance),
+
+        AccidentVehicles =
+            await _context.Vehicles.CountAsync(
+                x => x.Status ==
+                     Domain.Enums.VehicleStatus.Accident),
+
+        InactiveVehicles =
+            await _context.Vehicles.CountAsync(
+                x => x.Status ==
+                     Domain.Enums.VehicleStatus.Inactive),
+
+        RetiredVehicles =
+            await _context.Vehicles.CountAsync(
+                x => x.Status ==
+                     Domain.Enums.VehicleStatus.Retired),
+
+        SoldVehicles =
+            await _context.Vehicles.CountAsync(
+                x => x.Status ==
+                     Domain.Enums.VehicleStatus.Sold)
+    };
+}
 }

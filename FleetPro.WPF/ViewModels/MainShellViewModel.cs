@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FleetPro.Application.Interfaces;
 
 namespace FleetPro.WPF.ViewModels;
 
@@ -8,6 +9,8 @@ public partial class MainShellViewModel : ObservableObject
     private readonly VehiclesViewModel _vehiclesViewModel;
 
     private readonly VehicleFormViewModel _vehicleFormViewModel;
+
+    private readonly IVehicleService _vehicleService;
 
     [ObservableProperty]
     private ObservableObject? currentPage;
@@ -19,43 +22,46 @@ public partial class MainShellViewModel : ObservableObject
     private string role = string.Empty;
 
     public MainShellViewModel(
-        VehiclesViewModel vehiclesViewModel,
-        VehicleFormViewModel vehicleFormViewModel)
-    {
-        _vehiclesViewModel =
-            vehiclesViewModel;
+    VehiclesViewModel vehiclesViewModel,
+    VehicleFormViewModel vehicleFormViewModel,
+    IVehicleService vehicleService)
+{
+    _vehiclesViewModel =
+        vehiclesViewModel;
 
-        _vehicleFormViewModel =
-            vehicleFormViewModel;
+    _vehicleFormViewModel =
+        vehicleFormViewModel;
 
-        _vehicleFormViewModel.RequestClose +=
-            OnVehicleFormRequestClose;
+    _vehicleService =
+        vehicleService;
 
-        _vehiclesViewModel.AddVehicleRequested +=
-    OnAddVehicleRequested;
+    _vehicleFormViewModel.RequestClose +=
+        OnVehicleFormRequestClose;
+
+    _vehiclesViewModel.AddVehicleRequested +=
+        OnAddVehicleRequested;
 
     _vehiclesViewModel.EditVehicleRequested +=
-    OnEditVehicleRequested;
-    }
+        OnEditVehicleRequested;
+}
 
-    public void SetUser(
-        string username,
-        string role)
-    {
-        Username = username;
-        Role = role;
+    public async Task SetUser(string username, string role)
+{
+    Username = username;
+    Role = role;
 
-        ShowDashboard();
-    }
+    await ShowDashboard();
+}
 
     [RelayCommand]
-    private void ShowDashboard()
-    {
-        CurrentPage =
-            new DashboardViewModel(
-                Username,
-                Role);
-    }
+private async Task ShowDashboard()
+{
+    var dashboardViewModel = new DashboardViewModel(_vehicleService);
+
+    CurrentPage = dashboardViewModel;
+
+    await dashboardViewModel.LoadAsync(Username, Role);
+}
 
     [RelayCommand]
     private async Task ShowVehicles()

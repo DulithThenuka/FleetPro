@@ -99,7 +99,7 @@ public partial class LoginViewModel : ObservableObject
             }
 
 
-            _mainShellViewModel.SetUser(
+            await _mainShellViewModel.SetUser(
                 result.Username!,
                 result.Role ?? "Unknown");
 

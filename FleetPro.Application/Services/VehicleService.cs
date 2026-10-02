@@ -423,4 +423,60 @@ public async Task<(bool Success, string Message)>
     return (true,
         "Vehicle updated successfully.");
 }
+public async Task<VehicleStatisticsDto>
+    GetStatisticsAsync()
+{
+    return await _repository.GetStatisticsAsync();
+}
+public async Task<(bool Success, string Message)>
+    RetireAsync(int vehicleId)
+{
+    var vehicle =
+        await _repository.GetByIdAsync(vehicleId);
+
+    if (vehicle == null)
+    {
+        return (false,
+            "Vehicle could not be found.");
+    }
+
+    if (vehicle.Status ==
+        VehicleStatus.Retired)
+    {
+        return (false,
+            "Vehicle is already retired.");
+    }
+
+    if (vehicle.Status ==
+        VehicleStatus.Sold)
+    {
+        return (false,
+            "A sold vehicle cannot be retired.");
+    }
+
+    if (vehicle.Status ==
+        VehicleStatus.Assigned)
+    {
+        return (false,
+            "An assigned vehicle cannot be retired. Remove the assignment first.");
+    }
+
+    if (vehicle.Status ==
+        VehicleStatus.UnderMaintenance)
+    {
+        return (false,
+            "A vehicle under maintenance cannot be retired.");
+    }
+
+    vehicle.Status =
+        VehicleStatus.Retired;
+
+    vehicle.UpdatedAt =
+        DateTime.UtcNow;
+
+    await _repository.SaveChangesAsync();
+
+    return (true,
+        "Vehicle retired successfully.");
+}
 }

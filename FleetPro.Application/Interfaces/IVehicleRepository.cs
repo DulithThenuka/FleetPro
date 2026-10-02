@@ -1,3 +1,4 @@
+using FleetPro.Application.DTOs;
 using FleetPro.Domain.Entities;
 
 namespace FleetPro.Application.Interfaces;
@@ -14,6 +15,8 @@ public interface IVehicleRepository
     Task<List<Branch>> GetBranchesAsync();
 
     Task<List<VehicleType>> GetVehicleTypesAsync();
+
+    Task<VehicleStatisticsDto> GetStatisticsAsync();
 
     Task AddAsync(Vehicle vehicle);
 
