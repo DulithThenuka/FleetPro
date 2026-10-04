@@ -10,16 +10,16 @@
             <views:LoginView />
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type viewModels:MainShellViewModel}">
+            <views:MainShellView />
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type viewModels:DashboardViewModel}">
             <views:DashboardView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type viewModels:VehiclesViewModel}">
             <views:VehiclesView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type viewModels:MainShellViewModel}">
-            <views:MainShellView />
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type viewModels:VehicleFormViewModel}">
@@ -35,8 +35,12 @@
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type viewModels:VehicleAssignmentViewModel}">
-    <views:VehicleAssignmentView />
-</DataTemplate>
+            <views:VehicleAssignmentView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModels:CompleteAssignmentViewModel}">
+            <views:CompleteAssignmentView />
+        </DataTemplate>
 
     </Application.Resources>
 

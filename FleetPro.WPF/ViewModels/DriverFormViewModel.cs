@@ -49,8 +49,16 @@ public partial class DriverFormViewModel : ObservableObject
     [ObservableProperty]
     private string formMessage = string.Empty;
 
-    public string FormTitle => "Add Driver";
-    public string SaveButtonText => "Save Driver";
+    [ObservableProperty]
+private bool isEditMode;
+
+[ObservableProperty]
+private int driverId;
+
+    public string FormTitle =>
+    IsEditMode ? "Edit Driver" : "Add Driver";
+    public string SaveButtonText =>
+    IsEditMode ? "Update Driver" : "Save Driver";
 
     public event EventHandler? RequestClose;
 
@@ -163,5 +171,26 @@ public partial class DriverFormViewModel : ObservableObject
     {
         RequestClose?.Invoke(this, EventArgs.Empty);
     }
+
+    public async Task LoadForEditAsync(int id)
+{
+    IsEditMode = true;
+    DriverId = id;
+
+    FormMessage = string.Empty;
+
+    var driver = await _driverService.GetByIdAsync(id);
+
+    if (driver is null)
+    {
+        FormMessage = "Driver not found.";
+        return;
+    }
+
+    EmployeeNumber = driver.EmployeeNumber;
+    FullName = driver.FullName;
+    LicenseNumber = driver.LicenseNumber;
+    LicenseExpiryDate = driver.LicenseExpiryDate;
+}
     
 }

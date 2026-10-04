@@ -26,13 +26,15 @@ private readonly DriverFormViewModel _driverFormViewModel;
 
 private readonly VehicleAssignmentViewModel _vehicleAssignmentViewModel;
 
+private readonly CompleteAssignmentViewModel _completeAssignmentViewModel;
+
     public MainShellViewModel(
     VehiclesViewModel vehiclesViewModel,
     VehicleFormViewModel vehicleFormViewModel,
     IVehicleService vehicleService,
     DriversViewModel driversViewModel,
     DriverFormViewModel driverFormViewModel,
-    VehicleAssignmentViewModel vehicleAssignmentViewModel)
+    VehicleAssignmentViewModel vehicleAssignmentViewModel,CompleteAssignmentViewModel completeAssignmentViewModel)
 {
     _vehiclesViewModel =
         vehiclesViewModel;
@@ -42,6 +44,8 @@ private readonly VehicleAssignmentViewModel _vehicleAssignmentViewModel;
 
     _vehicleService =
         vehicleService;
+
+        _completeAssignmentViewModel = completeAssignmentViewModel;
 
     _vehicleAssignmentViewModel = vehicleAssignmentViewModel;
 
@@ -61,6 +65,12 @@ _driversViewModel.AddDriverRequested += OnAddDriverRequested;
 
 _driversViewModel.AssignVehicleRequested += OnAssignVehicleRequested;
 _vehicleAssignmentViewModel.RequestClose += OnAssignmentFormClosed;
+
+_driversViewModel.CompleteAssignmentRequested
+    += OnCompleteAssignmentRequested;
+
+_completeAssignmentViewModel.RequestClose
+    += OnCompleteAssignmentClosed;
 }
 
     public async Task SetUser(string username, string role)
@@ -161,6 +171,37 @@ private async Task LoadAssignmentAsync(int driverId)
 }
 
 private async void OnAssignmentFormClosed(
+    object? sender,
+    EventArgs e)
+{
+    CurrentPage = _driversViewModel;
+
+    await _driversViewModel.LoadAsync();
+}
+private async void OnCompleteAssignmentRequested(
+    object? sender,
+    int assignmentId)
+{
+    var driver = _driversViewModel.SelectedDriver;
+
+    if (driver is null)
+        return;
+
+    var driverName = driver.FullName;
+
+    var vehicleName = driver.AssignedVehicle ?? "Assigned Vehicle";
+
+    _completeAssignmentViewModel.SetAssignment(
+        assignmentId,
+        driverName,
+        vehicleName);
+
+    CurrentPage = _completeAssignmentViewModel;
+
+    await Task.CompletedTask;
+}
+
+private async void OnCompleteAssignmentClosed(
     object? sender,
     EventArgs e)
 {

@@ -21,4 +21,10 @@ public class DriverListItemDto
     public int? ActiveAssignmentId { get; set; }
 
     public string? AssignedVehicle { get; set; }
+
+    public bool IsLicenseExpired { get; set; }
+
+public bool IsLicenseExpiringSoon { get; set; }
+
+public string LicenseStatus { get; set; } = string.Empty;
 }

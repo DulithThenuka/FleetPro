@@ -33,6 +33,10 @@ public partial class DriversViewModel : ObservableObject
     public event EventHandler? AddDriverRequested;
     public event EventHandler<int>? AssignVehicleRequested;
 
+    public event EventHandler<int>? CompleteAssignmentRequested;
+
+    public event EventHandler<int>? EditDriverRequested;
+
     public DriversViewModel(IDriverService driverService)
     {
         _driverService = driverService;
@@ -109,5 +113,33 @@ public partial class DriversViewModel : ObservableObject
     private async Task Refresh()
     {
         await LoadAsync();
+    
     }
+
+    [RelayCommand]
+private void CompleteAssignment()
+{
+    if (SelectedDriver is null)
+        return;
+
+    if (!SelectedDriver.HasActiveAssignment)
+        return;
+
+    if (!SelectedDriver.ActiveAssignmentId.HasValue)
+        return;
+
+    CompleteAssignmentRequested?.Invoke(
+        this,
+        SelectedDriver.ActiveAssignmentId.Value);
+}
+[RelayCommand]
+private void EditDriver()
+{
+    if (SelectedDriver is null)
+        return;
+
+    EditDriverRequested?.Invoke(
+        this,
+        SelectedDriver.DriverId);
+}
 }

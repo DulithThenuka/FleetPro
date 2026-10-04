@@ -22,6 +22,11 @@
                 <TextBlock Text="Manage drivers, licenses and vehicle assignments"
                            Foreground="#6B7280"
                            Margin="0,5,0,0"/>
+                <TextBlock Text="{Binding StatusMessage}"
+           Foreground="#B91C1C"
+           FontWeight="SemiBold"
+           Margin="0,10,0,0"/>
+           
             </StackPanel>
 
             <Button Content="+ Add Driver"
@@ -98,6 +103,10 @@
                         <DataGridCheckBoxColumn Header="Assigned"
                                                 Binding="{Binding HasActiveAssignment}"
                                                 Width="80"/>
+                        
+                        <DataGridTextColumn Header="License Status"
+                    Binding="{Binding LicenseStatus}"
+                    Width="140"/>
 
                     </DataGrid.Columns>
 
@@ -164,6 +173,12 @@
                                Foreground="#B91C1C"
                                TextWrapping="Wrap"
                                Margin="0,15,0,0"/>
+
+                    <Button Content="End Assignment"
+        Padding="15,10"
+        Margin="0,0,0,10"
+        Command="{Binding CompleteAssignmentCommand}"
+        IsEnabled="{Binding SelectedDriver.HasActiveAssignment}"/>
 
                 </StackPanel>
 

@@ -15,11 +15,41 @@ public class DriverService : IDriverService
         _repository = repository;
     }
 
-    public async Task<List<DriverListItemDto>> GetAllAsync()
+    public async Task<IEnumerable<DriverListItemDto>> GetAllAsync()
 {
-    var drivers = await _repository.GetAllAsync();
+    var drivers = (await _repository.GetAllAsync()).ToList();
 
-    return drivers.ToList();
+    var today = DateTime.Today;
+
+    foreach (var driver in drivers)
+    {
+        if (!driver.LicenseExpiryDate.HasValue)
+        {
+            driver.LicenseStatus = "No expiry date";
+            continue;
+        }
+
+        var daysRemaining =
+            (driver.LicenseExpiryDate.Value.Date - today).Days;
+
+        if (daysRemaining < 0)
+        {
+            driver.IsLicenseExpired = true;
+            driver.LicenseStatus = "Expired";
+        }
+        else if (daysRemaining <= 30)
+        {
+            driver.IsLicenseExpiringSoon = true;
+            driver.LicenseStatus =
+                $"Expires in {daysRemaining} days";
+        }
+        else
+        {
+            driver.LicenseStatus = "Valid";
+        }
+    }
+
+    return drivers;
 }
 
     public async Task<(bool Success, string Message)>
@@ -290,8 +320,16 @@ public async Task CompleteAssignmentAsync(
         throw new InvalidOperationException(
             "End date cannot be before the start date.");
 
+    if (endDate.Date > DateTime.Today)
+        throw new InvalidOperationException(
+            "End date cannot be in the future.");
+
     if (endMileage.HasValue)
     {
+        if (endMileage.Value < 0)
+            throw new InvalidOperationException(
+                "End mileage cannot be negative.");
+
         if (assignment.StartMileage.HasValue &&
             endMileage.Value < assignment.StartMileage.Value)
         {
@@ -305,11 +343,11 @@ public async Task CompleteAssignmentAsync(
                 "End mileage cannot be lower than the vehicle's current mileage.");
         }
 
+        assignment.EndMileage = endMileage.Value;
         assignment.Vehicle.CurrentMileage = endMileage.Value;
     }
 
     assignment.EndDate = endDate;
-    assignment.EndMileage = endMileage;
 
     if (!string.IsNullOrWhiteSpace(notes))
     {
@@ -321,6 +359,76 @@ public async Task CompleteAssignmentAsync(
     assignment.Status = AssignmentStatus.Completed;
 
     assignment.Vehicle.Status = VehicleStatus.Available;
+
+    await _repository.SaveChangesAsync();
+}
+public async Task UpdateAsync(UpdateDriverRequest request)
+{
+    var driver = await _repository.GetByIdAsync(request.DriverId);
+
+    if (driver is null)
+        throw new InvalidOperationException("Driver not found.");
+
+    if (string.IsNullOrWhiteSpace(request.EmployeeNumber))
+        throw new InvalidOperationException(
+            "Employee number is required.");
+
+    if (string.IsNullOrWhiteSpace(request.FullName))
+        throw new InvalidOperationException(
+            "Full name is required.");
+
+    if (string.IsNullOrWhiteSpace(request.LicenseNumber))
+        throw new InvalidOperationException(
+            "License number is required.");
+
+    if (request.BranchId <= 0)
+        throw new InvalidOperationException(
+            "Branch is required.");
+
+    if (request.LicenseExpiryDate.HasValue &&
+        request.LicenseExpiryDate.Value.Date < DateTime.Today)
+    {
+        throw new InvalidOperationException(
+            "License has expired.");
+    }
+
+    if (!string.Equals(
+            driver.EmployeeNumber,
+            request.EmployeeNumber,
+            StringComparison.OrdinalIgnoreCase))
+    {
+        if (await _repository.EmployeeNumberExistsAsync(
+                request.EmployeeNumber))
+        {
+            throw new InvalidOperationException(
+                "Employee number already exists.");
+        }
+    }
+
+    if (!string.Equals(
+            driver.LicenseNumber,
+            request.LicenseNumber,
+            StringComparison.OrdinalIgnoreCase))
+    {
+        if (await _repository.LicenseNumberExistsAsync(
+                request.LicenseNumber))
+        {
+            throw new InvalidOperationException(
+                "License number already exists.");
+        }
+    }
+
+    driver.EmployeeNumber = request.EmployeeNumber.Trim();
+    driver.FullName = request.FullName.Trim();
+    driver.NIC = request.NIC?.Trim();
+    driver.Phone = request.Phone?.Trim();
+    driver.Address = request.Address?.Trim();
+    driver.LicenseNumber = request.LicenseNumber.Trim();
+    driver.LicenseCategory = request.LicenseCategory?.Trim();
+    driver.LicenseExpiryDate = request.LicenseExpiryDate;
+    driver.JoiningDate = request.JoiningDate;
+    driver.BranchId = request.BranchId;
+    driver.UpdatedAt = DateTime.UtcNow;
 
     await _repository.SaveChangesAsync();
 }
