@@ -24,12 +24,15 @@ public partial class MainShellViewModel : ObservableObject
     private readonly DriversViewModel _driversViewModel;
 private readonly DriverFormViewModel _driverFormViewModel;
 
+private readonly VehicleAssignmentViewModel _vehicleAssignmentViewModel;
+
     public MainShellViewModel(
     VehiclesViewModel vehiclesViewModel,
     VehicleFormViewModel vehicleFormViewModel,
     IVehicleService vehicleService,
     DriversViewModel driversViewModel,
-    DriverFormViewModel driverFormViewModel)
+    DriverFormViewModel driverFormViewModel,
+    VehicleAssignmentViewModel vehicleAssignmentViewModel)
 {
     _vehiclesViewModel =
         vehiclesViewModel;
@@ -39,6 +42,8 @@ private readonly DriverFormViewModel _driverFormViewModel;
 
     _vehicleService =
         vehicleService;
+
+    _vehicleAssignmentViewModel = vehicleAssignmentViewModel;
 
     _vehicleFormViewModel.RequestClose +=
         OnVehicleFormRequestClose;
@@ -53,6 +58,9 @@ private readonly DriverFormViewModel _driverFormViewModel;
 _driverFormViewModel = driverFormViewModel;
 
 _driversViewModel.AddDriverRequested += OnAddDriverRequested;
+
+_driversViewModel.AssignVehicleRequested += OnAssignVehicleRequested;
+_vehicleAssignmentViewModel.RequestClose += OnAssignmentFormClosed;
 }
 
     public async Task SetUser(string username, string role)
@@ -133,6 +141,28 @@ private async Task LoadDriverFormAsync()
 }
 [RelayCommand]
 private async Task OpenDrivers()
+{
+    CurrentPage = _driversViewModel;
+
+    await _driversViewModel.LoadAsync();
+}
+private void OnAssignVehicleRequested(
+    object? sender,
+    int driverId)
+{
+    CurrentPage = _vehicleAssignmentViewModel;
+
+    _ = LoadAssignmentAsync(driverId);
+}
+
+private async Task LoadAssignmentAsync(int driverId)
+{
+    await _vehicleAssignmentViewModel.LoadAsync(driverId);
+}
+
+private async void OnAssignmentFormClosed(
+    object? sender,
+    EventArgs e)
 {
     CurrentPage = _driversViewModel;
 

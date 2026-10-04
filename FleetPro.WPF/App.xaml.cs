@@ -64,6 +64,8 @@ public partial class App : System.Windows.Application
 
         services.AddTransient<DriversViewModel>();
 services.AddTransient<DriverFormViewModel>();
+
+services.AddTransient<VehicleAssignmentViewModel>();
     }
 
     protected override async void OnStartup(

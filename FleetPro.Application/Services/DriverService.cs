@@ -15,53 +15,12 @@ public class DriverService : IDriverService
         _repository = repository;
     }
 
-    public async Task<List<DriverListItemDto>>
-        GetAllAsync()
-    {
-        var drivers =
-            await _repository.GetAllAsync();
+    public async Task<List<DriverListItemDto>> GetAllAsync()
+{
+    var drivers = await _repository.GetAllAsync();
 
-        return drivers.Select(driver =>
-        {
-            var activeAssignment =
-                driver.VehicleAssignments
-                    .FirstOrDefault(x =>
-                        x.Status ==
-                        AssignmentStatus.Active);
-
-            return new DriverListItemDto
-            {
-                DriverId =
-                    driver.DriverId,
-
-                EmployeeNumber =
-                    driver.EmployeeNumber,
-
-                FullName =
-                    driver.FullName,
-
-                LicenseNumber =
-                    driver.LicenseNumber,
-
-                LicenseExpiryDate =
-                    driver.LicenseExpiryDate,
-
-                Branch =
-                    driver.Branch.BranchName,
-
-                Status =
-                    driver.Status.ToString(),
-
-                HasActiveAssignment =
-                    activeAssignment != null,
-
-                AssignedVehicle =
-                    activeAssignment?
-                        .Vehicle
-                        .RegistrationNumber
-            };
-        }).ToList();
-    }
+    return drivers.ToList();
+}
 
     public async Task<(bool Success, string Message)>
         CreateAsync(
@@ -168,6 +127,45 @@ public class DriverService : IDriverService
             "Driver registered successfully.");
     }
 
+    public async Task<DriverListItemDto?> GetByIdAsync(int driverId)
+{
+    var driver = await _repository.GetByIdAsync(driverId);
+
+    if (driver is null)
+        return null;
+
+    var activeAssignment = driver.VehicleAssignments
+        .FirstOrDefault(x =>
+            x.Status == AssignmentStatus.Active);
+
+    return new DriverListItemDto
+    {
+        DriverId = driver.DriverId,
+
+        EmployeeNumber = driver.EmployeeNumber,
+
+        FullName = driver.FullName,
+
+        LicenseNumber = driver.LicenseNumber,
+
+        LicenseExpiryDate = driver.LicenseExpiryDate,
+
+        Branch = driver.Branch?.BranchName ?? string.Empty,
+
+        Status = driver.Status.ToString(),
+
+        HasActiveAssignment = activeAssignment is not null,
+
+        ActiveAssignmentId = activeAssignment?.AssignmentId,
+
+        AssignedVehicle = activeAssignment?.Vehicle is not null
+            ? $"{activeAssignment.Vehicle.RegistrationNumber} - " +
+              $"{activeAssignment.Vehicle.Brand} " +
+              $"{activeAssignment.Vehicle.Model}"
+            : null
+    };
+}
+
     public async Task<(bool Success, string Message)>
         AssignVehicleAsync(
             AssignVehicleRequest request)
@@ -270,5 +268,60 @@ public class DriverService : IDriverService
     public async Task<IEnumerable<LookupItemDto>> GetBranchesAsync()
 {
     return await _repository.GetBranchesAsync();
+}
+
+public async Task CompleteAssignmentAsync(
+    int assignmentId,
+    DateTime endDate,
+    decimal? endMileage,
+    string? notes)
+{
+    var assignment =
+        await _repository.GetAssignmentByIdAsync(assignmentId);
+
+    if (assignment is null)
+        throw new InvalidOperationException("Assignment not found.");
+
+    if (assignment.Status != AssignmentStatus.Active)
+        throw new InvalidOperationException(
+            "Only active assignments can be completed.");
+
+    if (endDate.Date < assignment.StartDate.Date)
+        throw new InvalidOperationException(
+            "End date cannot be before the start date.");
+
+    if (endMileage.HasValue)
+    {
+        if (assignment.StartMileage.HasValue &&
+            endMileage.Value < assignment.StartMileage.Value)
+        {
+            throw new InvalidOperationException(
+                "End mileage cannot be lower than start mileage.");
+        }
+
+        if (endMileage.Value < assignment.Vehicle.CurrentMileage)
+        {
+            throw new InvalidOperationException(
+                "End mileage cannot be lower than the vehicle's current mileage.");
+        }
+
+        assignment.Vehicle.CurrentMileage = endMileage.Value;
+    }
+
+    assignment.EndDate = endDate;
+    assignment.EndMileage = endMileage;
+
+    if (!string.IsNullOrWhiteSpace(notes))
+    {
+        assignment.Notes = string.IsNullOrWhiteSpace(assignment.Notes)
+            ? notes.Trim()
+            : $"{assignment.Notes}\n{notes.Trim()}";
+    }
+
+    assignment.Status = AssignmentStatus.Completed;
+
+    assignment.Vehicle.Status = VehicleStatus.Available;
+
+    await _repository.SaveChangesAsync();
 }
 }

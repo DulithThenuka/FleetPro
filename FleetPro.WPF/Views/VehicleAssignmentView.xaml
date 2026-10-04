@@ -1,0 +1,144 @@
+<UserControl x:Class="FleetPro.WPF.Views.VehicleAssignmentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F5F7FA">
+
+    <Grid Margin="30">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0"
+                   Text="Assign Vehicle"
+                   FontSize="28"
+                   FontWeight="Bold"/>
+
+        <TextBlock Grid.Row="1"
+                   Text="Create an active vehicle assignment for the selected driver."
+                   Foreground="#6B7280"
+                   Margin="0,5,0,25"/>
+
+        <!-- Driver -->
+        <Border Grid.Row="2"
+                Background="White"
+                CornerRadius="10"
+                Padding="20"
+                Margin="0,0,0,20">
+
+            <StackPanel>
+
+                <TextBlock Text="Driver"
+                           FontWeight="SemiBold"/>
+
+                <TextBlock Text="{Binding DriverName}"
+                           FontSize="20"
+                           FontWeight="Bold"
+                           Margin="0,5,0,2"/>
+
+                <TextBlock Text="{Binding EmployeeNumber}"
+                           Foreground="#6B7280"/>
+
+            </StackPanel>
+
+        </Border>
+
+        <!-- Vehicle -->
+        <StackPanel Grid.Row="3"
+                    Margin="0,0,0,15">
+
+            <TextBlock Text="Available Vehicle"
+                       FontWeight="SemiBold"/>
+
+            <ComboBox ItemsSource="{Binding AvailableVehicles}"
+                      SelectedItem="{Binding SelectedVehicle}"
+                      Margin="0,6,0,0"
+                      Height="40">
+
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding RegistrationNumber}"
+                                       FontWeight="SemiBold"/>
+
+                            <TextBlock Text="  •  "/>
+
+                            <TextBlock Text="{Binding Brand}"/>
+
+                            <TextBlock Text=" "/>
+
+                            <TextBlock Text="{Binding Model}"/>
+
+                            <TextBlock Text="  •  "/>
+
+                            <TextBlock Text="{Binding CurrentMileage, StringFormat={}{0:0.0} km}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+
+            </ComboBox>
+
+        </StackPanel>
+
+        <!-- Start Date -->
+        <StackPanel Grid.Row="4"
+                    Margin="0,0,0,15">
+
+            <TextBlock Text="Assignment Start Date"
+                       FontWeight="SemiBold"/>
+
+            <DatePicker SelectedDate="{Binding StartDate}"
+                        Height="40"
+                        Margin="0,6,0,0"/>
+
+        </StackPanel>
+
+        <!-- Mileage + Notes -->
+        <StackPanel Grid.Row="5">
+
+            <TextBlock Text="Start Mileage"
+                       FontWeight="SemiBold"/>
+
+            <TextBox Text="{Binding StartMileage, UpdateSourceTrigger=PropertyChanged}"
+                     Height="40"
+                     Margin="0,6,0,15"/>
+
+            <TextBlock Text="Notes"
+                       FontWeight="SemiBold"/>
+
+            <TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
+                     Height="90"
+                     Margin="0,6,0,15"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     VerticalScrollBarVisibility="Auto"/>
+
+            <TextBlock Text="{Binding FormMessage}"
+                       Foreground="#B91C1C"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,15"/>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+
+                <Button Content="Cancel"
+                        Padding="18,10"
+                        Margin="0,0,10,0"
+                        Command="{Binding CancelCommand}"/>
+
+                <Button Content="Assign Vehicle"
+                        Padding="18,10"
+                        Command="{Binding SaveCommand}"/>
+
+            </StackPanel>
+
+        </StackPanel>
+
+    </Grid>
+
+</UserControl>

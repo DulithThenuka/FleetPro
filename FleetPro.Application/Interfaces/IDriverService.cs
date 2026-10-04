@@ -15,4 +15,12 @@ public interface IDriverService
             AssignVehicleRequest request);
 
     Task<IEnumerable<LookupItemDto>> GetBranchesAsync();
+
+    Task CompleteAssignmentAsync(
+    int assignmentId,
+    DateTime endDate,
+    decimal? endMileage,
+    string? notes);
+
+    Task<DriverListItemDto?> GetByIdAsync(int driverId);
 }
